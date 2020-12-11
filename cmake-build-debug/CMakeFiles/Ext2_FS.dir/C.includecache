@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/llincyaw/Desktop/Ext2_FS/disk.c
+disk.h
+/home/llincyaw/Desktop/Ext2_FS/disk.h
+stdio.h
+-
+
+/home/llincyaw/Desktop/Ext2_FS/disk.h
+

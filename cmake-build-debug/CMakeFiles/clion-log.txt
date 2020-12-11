@@ -1,0 +1,4 @@
+/home/llincyaw/Downloads/CLion-2020.2.1/clion-2020.2.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/llincyaw/Desktop/Ext2_FS
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/llincyaw/Desktop/Ext2_FS/cmake-build-debug
