@@ -14,7 +14,7 @@ static FILE* disk;
 
 static int create_disk()
 {
-        FILE* tmp = fopen("disk","w");
+        FILE* tmp = fopen("../disks/disk","w");
         for(int i = 0; i < get_disk_size(); i++){
                 fputc(0,tmp);
         }
@@ -26,10 +26,10 @@ int open_disk()
         if(disk != 0){
                 return -1;
         }
-        disk = fopen("disk","r+");
+        disk = fopen("../disks/disk","r+");
         if(disk == 0){
                 create_disk();
-                disk = fopen("disk","r+");
+                disk = fopen("../disks/disk","r+");
                 if(disk == 0){
                         return -1;
                 }

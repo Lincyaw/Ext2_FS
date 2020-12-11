@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/Ext2_FS.dir/disk.c.o"
+  "CMakeFiles/Ext2_FS.dir/fs.c.o"
   "CMakeFiles/Ext2_FS.dir/main.c.o"
+  "CMakeFiles/Ext2_FS.dir/testModule.c.o"
   "Ext2_FS"
   "Ext2_FS.pdb"
 )

@@ -94,12 +94,12 @@ clean: CMakeFiles/Ext2_FS.dir/clean
 CMakeFiles/Ext2_FS.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ext2_FS.dir/build.make CMakeFiles/Ext2_FS.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ext2_FS.dir/build.make CMakeFiles/Ext2_FS.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/llincyaw/Desktop/Ext2_FS/cmake-build-debug/CMakeFiles --progress-num=1,2,3 "Built target Ext2_FS"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/llincyaw/Desktop/Ext2_FS/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5 "Built target Ext2_FS"
 .PHONY : CMakeFiles/Ext2_FS.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/Ext2_FS.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/llincyaw/Desktop/Ext2_FS/cmake-build-debug/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/llincyaw/Desktop/Ext2_FS/cmake-build-debug/CMakeFiles 5
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Ext2_FS.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/llincyaw/Desktop/Ext2_FS/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/Ext2_FS.dir/rule

@@ -82,7 +82,19 @@
 		<Unit filename="/home/llincyaw/Desktop/Ext2_FS/disk.h">
 			<Option target="Ext2_FS"/>
 		</Unit>
+		<Unit filename="/home/llincyaw/Desktop/Ext2_FS/fs.c">
+			<Option target="Ext2_FS"/>
+		</Unit>
+		<Unit filename="/home/llincyaw/Desktop/Ext2_FS/fs.h">
+			<Option target="Ext2_FS"/>
+		</Unit>
 		<Unit filename="/home/llincyaw/Desktop/Ext2_FS/main.c">
+			<Option target="Ext2_FS"/>
+		</Unit>
+		<Unit filename="/home/llincyaw/Desktop/Ext2_FS/testModule.c">
+			<Option target="Ext2_FS"/>
+		</Unit>
+		<Unit filename="/home/llincyaw/Desktop/Ext2_FS/testModule.h">
 			<Option target="Ext2_FS"/>
 		</Unit>
 		<Unit filename="/home/llincyaw/Desktop/Ext2_FS/CMakeLists.txt">

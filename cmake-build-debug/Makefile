@@ -170,6 +170,33 @@ disk.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ext2_FS.dir/build.make CMakeFiles/Ext2_FS.dir/disk.c.s
 .PHONY : disk.c.s
 
+fs.o: fs.c.o
+
+.PHONY : fs.o
+
+# target to build an object file
+fs.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ext2_FS.dir/build.make CMakeFiles/Ext2_FS.dir/fs.c.o
+.PHONY : fs.c.o
+
+fs.i: fs.c.i
+
+.PHONY : fs.i
+
+# target to preprocess a source file
+fs.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ext2_FS.dir/build.make CMakeFiles/Ext2_FS.dir/fs.c.i
+.PHONY : fs.c.i
+
+fs.s: fs.c.s
+
+.PHONY : fs.s
+
+# target to generate assembly for a file
+fs.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ext2_FS.dir/build.make CMakeFiles/Ext2_FS.dir/fs.c.s
+.PHONY : fs.c.s
+
 main.o: main.c.o
 
 .PHONY : main.o
@@ -197,6 +224,33 @@ main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ext2_FS.dir/build.make CMakeFiles/Ext2_FS.dir/main.c.s
 .PHONY : main.c.s
 
+testModule.o: testModule.c.o
+
+.PHONY : testModule.o
+
+# target to build an object file
+testModule.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ext2_FS.dir/build.make CMakeFiles/Ext2_FS.dir/testModule.c.o
+.PHONY : testModule.c.o
+
+testModule.i: testModule.c.i
+
+.PHONY : testModule.i
+
+# target to preprocess a source file
+testModule.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ext2_FS.dir/build.make CMakeFiles/Ext2_FS.dir/testModule.c.i
+.PHONY : testModule.c.i
+
+testModule.s: testModule.c.s
+
+.PHONY : testModule.s
+
+# target to generate assembly for a file
+testModule.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Ext2_FS.dir/build.make CMakeFiles/Ext2_FS.dir/testModule.c.s
+.PHONY : testModule.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -209,9 +263,15 @@ help:
 	@echo "... disk.o"
 	@echo "... disk.i"
 	@echo "... disk.s"
+	@echo "... fs.o"
+	@echo "... fs.i"
+	@echo "... fs.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... testModule.o"
+	@echo "... testModule.i"
+	@echo "... testModule.s"
 .PHONY : help
 
 

@@ -5,7 +5,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "/home/llincyaw/Desktop/Ext2_FS/disk.c" "/home/llincyaw/Desktop/Ext2_FS/cmake-build-debug/CMakeFiles/Ext2_FS.dir/disk.c.o"
+  "/home/llincyaw/Desktop/Ext2_FS/fs.c" "/home/llincyaw/Desktop/Ext2_FS/cmake-build-debug/CMakeFiles/Ext2_FS.dir/fs.c.o"
   "/home/llincyaw/Desktop/Ext2_FS/main.c" "/home/llincyaw/Desktop/Ext2_FS/cmake-build-debug/CMakeFiles/Ext2_FS.dir/main.c.o"
+  "/home/llincyaw/Desktop/Ext2_FS/testModule.c" "/home/llincyaw/Desktop/Ext2_FS/cmake-build-debug/CMakeFiles/Ext2_FS.dir/testModule.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

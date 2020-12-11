@@ -4,5 +4,17 @@
 CMakeFiles/Ext2_FS.dir/disk.c.o: ../disk.c
 CMakeFiles/Ext2_FS.dir/disk.c.o: ../disk.h
 
+CMakeFiles/Ext2_FS.dir/fs.c.o: ../disk.h
+CMakeFiles/Ext2_FS.dir/fs.c.o: ../fs.c
+CMakeFiles/Ext2_FS.dir/fs.c.o: ../fs.h
+
+CMakeFiles/Ext2_FS.dir/main.c.o: ../disk.h
+CMakeFiles/Ext2_FS.dir/main.c.o: ../fs.h
 CMakeFiles/Ext2_FS.dir/main.c.o: ../main.c
+CMakeFiles/Ext2_FS.dir/main.c.o: ../testModule.h
+
+CMakeFiles/Ext2_FS.dir/testModule.c.o: ../disk.h
+CMakeFiles/Ext2_FS.dir/testModule.c.o: ../fs.h
+CMakeFiles/Ext2_FS.dir/testModule.c.o: ../testModule.c
+CMakeFiles/Ext2_FS.dir/testModule.c.o: ../testModule.h
 

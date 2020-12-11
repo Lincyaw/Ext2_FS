@@ -4,5 +4,17 @@
 CMakeFiles/Ext2_FS.dir/disk.c.o
  /home/llincyaw/Desktop/Ext2_FS/disk.c
  /home/llincyaw/Desktop/Ext2_FS/disk.h
+CMakeFiles/Ext2_FS.dir/fs.c.o
+ /home/llincyaw/Desktop/Ext2_FS/disk.h
+ /home/llincyaw/Desktop/Ext2_FS/fs.c
+ /home/llincyaw/Desktop/Ext2_FS/fs.h
 CMakeFiles/Ext2_FS.dir/main.c.o
+ /home/llincyaw/Desktop/Ext2_FS/disk.h
+ /home/llincyaw/Desktop/Ext2_FS/fs.h
  /home/llincyaw/Desktop/Ext2_FS/main.c
+ /home/llincyaw/Desktop/Ext2_FS/testModule.h
+CMakeFiles/Ext2_FS.dir/testModule.c.o
+ /home/llincyaw/Desktop/Ext2_FS/disk.h
+ /home/llincyaw/Desktop/Ext2_FS/fs.h
+ /home/llincyaw/Desktop/Ext2_FS/testModule.c
+ /home/llincyaw/Desktop/Ext2_FS/testModule.h

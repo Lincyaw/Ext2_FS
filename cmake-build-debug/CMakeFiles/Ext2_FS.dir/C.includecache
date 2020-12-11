@@ -6,11 +6,39 @@
 
 #IncludeRegexTransform: 
 
-/home/llincyaw/Desktop/Ext2_FS/disk.c
+/home/llincyaw/Desktop/Ext2_FS/disk.h
+
+/home/llincyaw/Desktop/Ext2_FS/fs.c
+fs.h
+/home/llincyaw/Desktop/Ext2_FS/fs.h
+
+/home/llincyaw/Desktop/Ext2_FS/fs.h
 disk.h
 /home/llincyaw/Desktop/Ext2_FS/disk.h
 stdio.h
 -
+stdint-gcc.h
+-
+stdlib.h
+-
+string.h
+-
 
+/home/llincyaw/Desktop/Ext2_FS/main.c
+disk.h
+/home/llincyaw/Desktop/Ext2_FS/disk.h
+fs.h
+/home/llincyaw/Desktop/Ext2_FS/fs.h
+testModule.h
+/home/llincyaw/Desktop/Ext2_FS/testModule.h
+
+/home/llincyaw/Desktop/Ext2_FS/testModule.c
+testModule.h
+/home/llincyaw/Desktop/Ext2_FS/testModule.h
+
+/home/llincyaw/Desktop/Ext2_FS/testModule.h
+fs.h
+/home/llincyaw/Desktop/Ext2_FS/fs.h
+disk.h
 /home/llincyaw/Desktop/Ext2_FS/disk.h
 
