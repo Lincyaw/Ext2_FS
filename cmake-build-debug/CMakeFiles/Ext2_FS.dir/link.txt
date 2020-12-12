@@ -1,1 +1,0 @@
-/usr/bin/cc -g   CMakeFiles/Ext2_FS.dir/main.c.o CMakeFiles/Ext2_FS.dir/disk.c.o CMakeFiles/Ext2_FS.dir/fs.c.o CMakeFiles/Ext2_FS.dir/testModule.c.o  -o Ext2_FS 

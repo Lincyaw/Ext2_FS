@@ -2,6 +2,8 @@
 Hitsz [2020秋青春版Ext2](https://hitsz-lab.gitee.io/os_lab/lab5/part1/)
 
 - 环境：ubuntu 20.04
+    - 实际上windows也可以跑。只需要在File选项中,选择Reload Cmake Project,即可生成
+    一个cmake-build-debug文件夹，然后就可以了。
 - IDE: clion 2020.3
 - 语言：C
 - 标准：C11
