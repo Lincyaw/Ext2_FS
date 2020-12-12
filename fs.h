@@ -6,7 +6,7 @@
 #define EXT2_FS_FS_H
 #include "disk.h"
 #include <stdio.h>
-#include <stdint-gcc.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
