@@ -4,21 +4,30 @@
 
 #ifndef EXT2_FS_FS_H
 #define EXT2_FS_FS_H
+
 #include "disk.h"
+#include "util.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-char buf[DEVICE_BLOCK_SIZE]; //一次读写的
+
+
+char buffer[2 * DEVICE_BLOCK_SIZE]; //一次读写的
 static char cmd[1024] = "\0";
+#define MAX_BLOCK_NUM (4096)
 #define BLOCK_SIZE (1024)
 #define SP_SIZE sizeof(sp_block)
 #define INODE_SIZE sizeof(iNode)
 #define DIR_SIZE sizeof(dirItem)
 #define MAGIC (0xaabbccdd)
-#define DEBUG (0)
+#define DEBUG (1)
 #pragma pack(1)
+enum fileType {
+    FILE_T = 100,
+    FOLDER_T
+};
 // size = (32*4+32*128+32*32)/4 = 656byte
 typedef struct super_block {
     int32_t magic_num;                  // 幻数
@@ -27,7 +36,7 @@ typedef struct super_block {
     int32_t dir_inode_count;            // 目录inode数
     uint32_t block_map[128];            // 数据块占用位图
     uint32_t inode_map[32];             // inode占用位图
-    int8_t un_used[1024-656];          // 填充
+    int8_t un_used[1024 - 656];          // 填充
 } sp_block;
 #pragma pack()
 
@@ -53,56 +62,26 @@ typedef struct dir_item {               // 目录项一个更常见的叫法是 
 
 
 void initExt2();
-/**
- * 打印超级块中的内容
- * @param sp_block_buf
- */
-void printSuperBlock(const sp_block* sp_block_buf);
-/**
- * 打印Inode中的内容
- * @param node
- */
-void printInode(const iNode * node);
-
-/**
- * 新建一个inode,可以是文件或者是文件夹。
- * 创建成功返回node的序号,否则返回-1.
- * @param size 文件/文件夹的大小
- * @param file_type 选择是文件还是文件夹
- * @param link 文件链接数,默认为1
- */
-int createInode(uint32_t size, uint16_t file_type, uint16_t link);
-
-/**
- * 新建一个directory entry
- * 创建成功返回1,否则返回-1
- * @param blockNum 在第几块block创建
- * @param inode_id inode的id,这里选择的是inode的序号
- * @param type 是文件还是文件夹
- * @param name 目录项表示的文件/目录的文件名/目录名
- */
-int createDirItem(uint32_t blockNum, uint32_t inode_id, uint8_t type, char *name);
 
 
-/**
- * 遍历给定目录(输入一个id)对应的block中遍历，直到找到名字是 name 的 dir_item , 返回 inodeid
- * @param curDirInode 当前目录所在的id号
- * @param name 要找的文件/文件夹名
- * @return
- */
-uint32_t findFolderOrFile(uint32_t curDirInode, char* name);
+void printSuperBlock(const sp_block *sp_block_buf);
 
 
-/**
- * 新建一个文件
- * @param fileName
- */
-int touch(char *fileName);
+void printInode(const iNode *node);
 
-/**
- * 新建一个文件夹
- * @param folderName
- */
+
+int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t link);
+
+
+int createDirItem(uint32_t blockNum, uint32_t inode_id, uint8_t type, char name[121]);
+
+
+uint32_t findFolderOrFile(uint32_t curDirInode, char name[121]);
+
+
+int touch(char* dir);
+int touchHelper(uint32_t curDirInode,char *fileName);
+
 int mkdir(char *folderName);
 
 int ls(char *dir);

@@ -9,6 +9,24 @@
 #define DEVICE_BLOCK_SIZE 512
 
 
+
+void disk_write_whole_block(unsigned int block_num, char* buf);
+
+void disk_read_whole_block(unsigned int block_num, char* buf);
+/**
+ * 封装后的disk_write_block,读写安全
+ * @param block_num
+ * @param buf
+ */
+void disk_write(unsigned int block_num, char* buf);
+/**
+ * 封装后的disk_write_block,读写安全
+ * @param block_num
+ * @param buf
+ */
+void disk_read(unsigned int block_num, char* buf);
+
+
 // Total disk size in bytes, 4 * 1024 * 1024 bytes (4 MiB) in total
 int get_disk_size();
 

@@ -5,10 +5,7 @@
 #include "testModule.h"
 
 void testInitSP() {
-    open_disk();
-    disk_read_block(0, buf);
-    sp_block *head = (sp_block *)buf;
+    disk_read(0, buffer);
+    sp_block *head = (sp_block *)buffer;
     printSuperBlock(head);
-    head+=SP_SIZE;
-    close_disk();
 }
