@@ -9,3 +9,12 @@ void testInitSP() {
     sp_block *head = (sp_block *)buffer;
     printSuperBlock(head);
 }
+
+void testSep(char* dir){
+
+    char * ans;
+    while((ans = strsep(&dir,"/"))!=NULL){
+        printf("%s\n",ans);
+        ans += strlen(ans);
+    }
+}

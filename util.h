@@ -14,5 +14,7 @@ void bit_set(uint32_t *array, uint32_t index);
 
 void bit_clear(uint32_t *array, uint32_t index);
 
-
+char *simple_tok(char *p, char d);
+char *trim(char *c);
+void rmEnter(char *c);
 #endif //EXT2_FS_UTIL_H

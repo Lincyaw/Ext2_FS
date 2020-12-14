@@ -162,6 +162,7 @@ int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t l
  * @return 创建成功返回1,否则返回-1
  */
 int createDirItem(uint32_t blockNum, uint32_t inode_id, uint8_t type, char name[121]) {
+    // TODO：测试函数
     disk_read_whole_block(blockNum, buffer);
     dirItem *di = (dirItem *) buffer;
     int flag = 0;
@@ -169,7 +170,7 @@ int createDirItem(uint32_t blockNum, uint32_t inode_id, uint8_t type, char name[
         if (!di[i].valid) {
             di[i].valid = 1;
             di[i].type = type;
-            strcpy_s(di[i].name, 121, name);
+            strcpy(di[i].name, name);
             di[i].inode_id = inode_id;
             flag = 1;
         }
@@ -231,28 +232,38 @@ int touchHelper(uint32_t curDirInode, char *fileName) {
 }
 
 /**
- *
- * @param route 形如 "config/zsh/zsh_config.txt" 这样的字符数组
+ * @param dir 形如 "config/zsh/zsh_config.txt" 这样的字符数组
  * @return 执行成功返回1, 否则返回-1
  */
 int touch(char *dir) {
-    // TODO: 把输入的形如"config/zsh/zsh_config.txt"的字符串, 解析成 "config" "zsh" "zsh_config.txt", 存入fileName
-    char *fileName = "TODO";
+    // eg:　把输入的形如"config/zsh/zsh_config.txt"的字符串, 解析成 "config" "zsh" "zsh_config.txt", 存入fileName
+    char *left, *right;
+//    char *fileName;
+    // strsep　函数分割出来的结果：此时fileName是 config
+    left = dir;
+    right = simple_tok(left, '/');
+//    fileName = strsep(&dir, "/");
+
     uint32_t targetId = 0;
-    while ((targetId = findFolderOrFile(targetId, fileName)) != -1) {
-        fileName = "TODO: Next File Name";
-        // 如果是最后一个文件夹名了, 就break. 注意, 还是要去找最后一个文件夹名
+    while ((targetId = findFolderOrFile(targetId, left)) != -1) {
+        // 往前挪，把指针挪到zsh开头的那里
+        left = right;
+        right = simple_tok(left, '/');
+        // 如果left等于right，则说明此时的left已经是文件名了，详情看simple_tok
+        if(left==right){
+            break;
+        }
     }
-    if (targetId == -1) {
-        return -1;
-    }
+//    if (targetId == -1) {
+//        return -1;
+//    }
     // 此时的targetId是最后一个文件夹所在的id, 还需要找到这个文件夹对应的blocks,在这个blocks中加入一个diritem,
     // 并且在inode数组中找一个空闲的inode, create一下
     // 下面开始创建一个新的inode
     uint32_t inode_id;
     for (int i = 1; i < 5; i++) {
         inode_id = createInode(i, 100, FILE_T, 1);
-        if (inode_id != -1) {
+        if (inode_id != -1) { // 创建成功就退出
             break;
         }
     }
@@ -272,13 +283,12 @@ int touch(char *dir) {
     int flag = 0;
     for (int i = 0; i < 6; i++) {
         int blkNum = block_point[i];
-        // TODO: 把下面的fileName改成要产生的文件名
-        if (createDirItem(blkNum, inode_id, FILE_T, fileName) == 1) {
+        // 此时的left是要产生的文件名
+        if (createDirItem(blkNum, inode_id, FILE_T, left) == 1) {
             flag = 1;
             break;
         }
     }
-
     return flag;
 }
 
