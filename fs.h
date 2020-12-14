@@ -67,7 +67,7 @@ void initExt2();
 void printSuperBlock(const sp_block *sp_block_buf);
 
 
-void printInode(const iNode *node);
+void printInode(iNode node,FILE* fp);
 
 
 int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t link);

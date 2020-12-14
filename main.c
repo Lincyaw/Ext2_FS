@@ -74,6 +74,12 @@ int main() {
             disk_read_whole_block(0,buffer);
             printSuperBlock((sp_block *) buffer);
         }
+        if (strcmp(left, "printIN") == 0) {
+            testCreateInode();
+        }
+        if (strcmp(left, "bitset") == 0) {
+            testBitSet();
+        }
 #endif
     }
     return 0;

@@ -50,14 +50,14 @@ void printSuperBlock(const sp_block *sp_block_buf) {
 
     printf("====================SUPER-BLOCK================\n");
     for (int i = 0; i < 4; i++) {
-        printf("%.8x ", head[i]);
+        printf("%x ", head[i]);
     }
     printf("\n");
     head += 4;
     uint32_t *mapHead = (uint32_t *) head;
     printf("====================BLOCK-MAP================\n");
     for (int i = 0; i < 128; i++) {
-        printf("%.8x ", *mapHead);
+        printf("%x ", *mapHead);
         mapHead++;
         if ((i + 1) % 4 == 0) {
             printf("\n");
@@ -65,7 +65,7 @@ void printSuperBlock(const sp_block *sp_block_buf) {
     }
     printf("====================INODE-MAP================\n");
     for (int i = 0; i < 32; i++) {
-        printf("%.8x ", *mapHead);
+        printf("%x ", *mapHead);
         mapHead++;
         if ((i + 1) % 4 == 0) {
             printf("\n");
@@ -75,27 +75,27 @@ void printSuperBlock(const sp_block *sp_block_buf) {
 
 }
 
-void printInode(const iNode *node) {
-    if (node == NULL) {
-        fprintf(stderr, "Error:\tNull pointer.\n");
-        return;
-    }
-    uint32_t *head = (uint32_t *) node;
-    printf("====================SIZE================\n");
-    printf("%.8x", *head);
+void printInode(iNode node, FILE *fp) {
+//    if (node == NULL) {
+//        fprintf(stderr, "Error:\tNull pointer.\n");
+//        return;
+//    }
+    uint32_t *head = (uint32_t *) &node;
+    fprintf(fp, "====================SIZE================\n");
+    fprintf(fp, "%x\n", *head);
     head++;
     uint16_t *head1 = (uint16_t *) head;
-    printf("====================file_type================\n");
-    printf("%.4x", *head1);
+    fprintf(fp, "====================file_type================\n");
+    fprintf(fp, "%x\n", *head1);
     head1++;
-    printf("====================link================\n");
-    printf("%.4x", *head1);
+    fprintf(fp, "====================link================\n");
+    fprintf(fp, "%x\n", *head1);
     head1++;
     head = (uint32_t *) head1;
-    printf("====================block_point================\n");
+    fprintf(fp, "====================block_point================\n");
 
     for (int i = 0; i < 6; i++) {
-        printf("%.8x", *head);
+        fprintf(fp, "%x\n", *head);
         head++;
     }
 }
@@ -110,16 +110,31 @@ void printInode(const iNode *node) {
  * @return 创建成功返回node的序号,否则返回-1.
  */
 int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t link) {
-    // TODO: test the function
+    // TODO: 问题: 第5次调用时出现Errors in disk. Errors in disk_read -- disk_write_block 等字样
     // 读要创建inode的这个block
     disk_read_whole_block(blockNum, buffer);
     iNode *p = (iNode *) buffer;
+
+#if DEBUG == 1
+    const char *filename1 = "../logs_before.txt";
+    FILE *fp1 = fopen(filename1, "w");
+    if (fp1 == NULL) {
+        puts("Fail to open file!");
+        exit(1);
+    }
+    for (int j = 0; j < BLOCK_SIZE / INODE_SIZE; j++) {
+        fprintf(fp1, "=====================%d=======================\n", j);
+        printInode(p[j], fp1);
+    }
+    fclose(fp1);
+#endif
+
     char head[2 * DEVICE_BLOCK_SIZE]; //读超级块
     disk_read_whole_block(0, head);
     sp_block *sp = (sp_block *) head;
     uint32_t *block_map = sp->block_map;
     // 第2块是根目录,所以从第3开始分配
-    for (int i = 3; i < BLOCK_SIZE / INODE_SIZE; i++) {
+    for (int i = blockNum == 1 ? 3 : 0; i < BLOCK_SIZE / INODE_SIZE; i++) {
         // 判断该位置是不是被使用过, 因为初始化的时候是全部初始化为0
         if (p[i].file_type == 0) {
             p[i].size = size;
@@ -131,9 +146,9 @@ int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t l
             for (int j = 5; j < MAX_BLOCK_NUM; j++) {
                 // 没被占用
                 if (!bit_isset(block_map, j)) {
-                    count++;
                     // 指向j
                     p[i].block_point[count] = j;
+                    count++;
                     // 修改为已占用
                     bit_set(block_map, j);
                     if (count == 6) {
@@ -147,7 +162,21 @@ int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t l
             }
             disk_write_whole_block(blockNum, buffer);
             disk_write_whole_block(0, head);
+#if DEBUG == 1
+            const char *filename2 = "../logs_after.txt";
+            FILE *fp2 = fopen(filename2, "w");
+            if (fp2 == NULL) {
+                puts("Fail to open file!");
+                exit(1);
+            }
+            for (int j = 0; j < BLOCK_SIZE / INODE_SIZE; j++) {
+                fprintf(fp2, "=====================%d=======================\n", j);
+                printInode(p[j], fp2);
+            }
+            fclose(fp2);
+#endif
             return i;
+
         }
     }
     return -1;
@@ -250,7 +279,7 @@ int touch(char *dir) {
         left = right;
         right = simple_tok(left, '/');
         // 如果left等于right，则说明此时的left已经是文件名了，详情看simple_tok
-        if(left==right){
+        if (left == right) {
             break;
         }
     }
