@@ -14,7 +14,6 @@
 #include <assert.h>
 
 
-char buffer[2 * DEVICE_BLOCK_SIZE]; //一次读写的
 static char cmd[1024] = "\0";
 #define MAX_BLOCK_NUM (4096)
 #define BLOCK_SIZE (1024)
@@ -23,6 +22,8 @@ static char cmd[1024] = "\0";
 #define DIR_SIZE sizeof(dirItem)
 #define MAGIC (0xaabbccdd)
 #define DEBUG (1)
+
+//char buffer[BLOCK_SIZE]; //不再使用全局的。使用全局导致有函数修改了这个buf，导致出错
 #pragma pack(1)
 enum fileType {
     FILE_T = 100,
@@ -89,5 +90,25 @@ int ls(char *dir);
 int cp();
 
 void shutdown();
+/**
+ *
+ * @param inodeNumber
+ * @return 返回第inodeNumber个inode，在哪个block
+ */
+uint32_t getBlockNum(uint32_t inodeNumber);
+/**
+ *
+ * @param inodeNumber
+ * @return 返回第inodeNumber个inode，在某个block中的第几个
+ */
+uint32_t getInodeNum(uint32_t inodeNumber);
+
+/**
+ *
+ * @param blockNum 在第几块block
+ * @param inodeNumInBlock 在块内的第几个inode
+ * @return 总的第几个inode
+ */
+uint32_t getTotalInodeNum(uint32_t blockNum,uint32_t inodeNumInBlock);
 
 #endif //EXT2_FS_FS_H

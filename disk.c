@@ -94,7 +94,7 @@ void disk_write(unsigned int block_num, char *buf) {
     }
     if (disk_write_block(block_num, buf) == -1) {
         fprintf(stderr, "Errors in disk_write -- disk_write_block\n");
-        return;
+//        return;
     }
     if (close_disk() == -1) {
         fprintf(stderr, "Errors in disk_write -- close_disk\n");
@@ -109,7 +109,7 @@ void disk_read(unsigned int block_num, char *buf) {
     }
     if (disk_read_block(block_num, buf) == -1) {
         fprintf(stderr, "Errors in disk_read -- disk_write_block\n");
-        return;
+//        return;
     }
     if (close_disk() == -1) {
         fprintf(stderr, "Errors in disk_read -- close_disk\n");

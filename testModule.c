@@ -5,6 +5,7 @@
 #include "testModule.h"
 
 void testInitSP() {
+    char buffer[BLOCK_SIZE];
     disk_read(0, buffer);
     sp_block *head = (sp_block *) buffer;
     printSuperBlock(head);
@@ -27,7 +28,9 @@ void testCreateInode() {
 }
 
 void testCreateDirItem() {
-
+    static int m = 1;
+    createDirItem(5, 2 + m, FILE_T, "pigpig");
+    m++;
 }
 
 void testBitSet() {
@@ -43,4 +46,10 @@ void testBitSet() {
 
     bit_set(data, 17);
     printBit(data, 10);
+    assert(bit_isset(data, 1));
+    assert(bit_isset(data, 17));
+    assert(bit_isset(data, 9));
+    assert(bit_isset(data, 8));
+
+
 }

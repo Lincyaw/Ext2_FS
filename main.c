@@ -23,10 +23,12 @@ int main() {
 #if DEBUG == 1
                 printf("\tInstruction:\tls (current folder)\n");
 #endif
+                ls(right);
             } else {
 #if DEBUG == 1
                 printf("\tInstruction:\tmkdir\n\tDest Folder:\t%s\n", right);
 #endif
+                ls(right);
             }
         } else if (strcmp(left, "mkdir") == 0) {
             if (left == right) {
@@ -35,6 +37,7 @@ int main() {
 #if DEBUG == 1
                 printf("\tInstruction:\tmkdir\n\tFolder name:\t%s\n", right);
 #endif
+                mkdir(right);
             }
         } else if (strcmp(left, "touch") == 0) {
             if (left == right) {
@@ -69,12 +72,16 @@ int main() {
         }
 
 #if DEBUG == 1
+        char buffer[BLOCK_SIZE];
         if (strcmp(left, "printSP") == 0) {
             disk_read_whole_block(0,buffer);
             printSuperBlock((sp_block *) buffer);
         }
         if (strcmp(left, "printIN") == 0) {
             testCreateInode();
+        }
+        if(strcmp(left,"printD")==0){
+            testCreateDirItem();
         }
         if (strcmp(left, "bitset") == 0) {
             testBitSet();
