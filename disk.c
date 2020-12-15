@@ -21,7 +21,7 @@ static int create_disk() {
 
 int open_disk() {
     if (disk != 0) {
-        fprintf(stderr, "Errors in disk.\n");
+        fprintf(stderr, "Open_disk: The disk has been opened. \n");
         return -1;
     }
     disk = fopen("../disks/disk", "r+");
@@ -29,7 +29,7 @@ int open_disk() {
         create_disk();
         disk = fopen("../disks/disk", "r+");
         if (disk == 0) {
-            fprintf(stderr, "Errors in disk.\n");
+            fprintf(stderr, "Open_disk: Open disk failed.\n");
             return -1;
         }
     }
@@ -38,19 +38,19 @@ int open_disk() {
 
 int disk_read_block(unsigned int block_num, char *buf) {
     if (disk == 0) {
-        fprintf(stderr, "Errors in disk.\n");
+        fprintf(stderr, "Disk_read_block: Disk is not opened. \n");
         return -1;
     }
     if (block_num * DEVICE_BLOCK_SIZE >= get_disk_size()) {
-        fprintf(stderr, "Errors in disk.\n");
+        fprintf(stderr, "Disk_read_block: Disk does not have such spaces.\n");
         return -1;
     }
     if (fseek(disk, block_num * DEVICE_BLOCK_SIZE, SEEK_SET)) {
-        fprintf(stderr, "Errors in disk.\n");
+        fprintf(stderr, "Disk_read_block: Move pointer failed.\n");
         return -1;
     }
     if (fread(buf, DEVICE_BLOCK_SIZE, 1, disk) != 1) {
-        fprintf(stderr, "Errors in disk.\n");
+        fprintf(stderr, "Disk_read_block: Read disk failed.\n");
         return -1;
     }
     return 0;
@@ -58,19 +58,19 @@ int disk_read_block(unsigned int block_num, char *buf) {
 
 int disk_write_block(unsigned int block_num, char *buf) {
     if (disk == 0) {
-        fprintf(stderr, "Errors in disk.\n");
+        fprintf(stderr, "Disk_write_block: Disk is not opened. \n");
         return -1;
     }
     if (block_num * DEVICE_BLOCK_SIZE >= get_disk_size()) {
-        fprintf(stderr, "Errors in disk.\n");
+        fprintf(stderr, "Disk_write_block: Disk does not have such spaces.\n");
         return -1;
     }
     if (fseek(disk, block_num * DEVICE_BLOCK_SIZE, SEEK_SET)) {
-        fprintf(stderr, "Errors in disk.\n");
+        fprintf(stderr, "Disk_write_block: Move pointer failed.\n");
         return -1;
     }
     if (fwrite(buf, DEVICE_BLOCK_SIZE, 1, disk) != 1) {
-        fprintf(stderr, "Errors in disk.\n");
+        fprintf(stderr, "Disk_write_block: Write disk failed.\n");
         return -1;
     }
     return 0;
@@ -78,7 +78,7 @@ int disk_write_block(unsigned int block_num, char *buf) {
 
 int close_disk() {
     if (disk == 0) {
-        fprintf(stderr, "Errors in disk.\n");
+        fprintf(stderr, "Close_disk: disk has been closed. \n");
         return -1;
     }
     int r = fclose(disk);

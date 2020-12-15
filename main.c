@@ -1,4 +1,3 @@
-//#define DEBUG 1
 #include "disk.h"
 #include "fs.h"
 #include "testModule.h"

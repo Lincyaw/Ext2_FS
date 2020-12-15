@@ -77,3 +77,25 @@ Hitsz [2020秋青春版Ext2](https://hitsz-lab.gitee.io/os_lab/lab5/part1/)
 对于`ls`命令，也差不多，只需要找到那个文件夹的id号之后，在其`block`中打印出所有的是`valid`的`dir_item`项即可。
 
 还剩最后一个复制文件的命令。假设已经找到了对应的目录，则只需要在当前目录里的`block`中找到源文件，拷贝一份（新增）相关信息（`inode`），在这个目录下的`block`新建一个`diritem`，将这个新增的`inode`的`id`填到这个新建的`diritem`中。
+
+
+
+
+
+
+
+# 实验bug记录
+
+## 第五次调用`printIN`,创建第五个`inode`时,出现磁盘读写错误
+
+出错路径为:
+
+```c++
+createInode -> disk_read_whole_block -> disk_read -> disk_read_block
+    -> fread
+```
+
+接下来继续调用`disk_read_whole_block`中的第二个`disk_read`, 出现`open_disk`错误, `disk!=0`导致出错。
+
+但不应该出现这种错误，在上一次调用`disk_read`的时候，已经关闭了磁盘访问了。
+
