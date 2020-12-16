@@ -105,3 +105,41 @@ createInode -> disk_read_whole_block -> disk_read -> disk_read_block
 ，因为`ls`命令会把文件全部打出来，不管是打印根目录还是子目录，都是一个结果，就是把所有的文件信息都打出来
 
 原因是： 没有为根目录分配inode和block，导致找不到对应的文件、文件夹。（找到的是第一块自己创建的inode）
+
+## 在文件夹里创建文件后，在其他的文件夹里也能看到该文件
+如下所示，估计是`ls`在寻址的时候，找到的是相同的一块
+
+或者在创建的时候，在同一个block里创建了
+```shell script
+> mkdir f1
+> mkdir f2
+> ls
+name                     type           inode_id       
+f1                       Folder         3              
+f2                       Folder         4              
+> touch f1/test
+> ls
+name                     type           inode_id       
+f1                       Folder         3              
+f2                       Folder         4              
+> ls f1/
+name                     type           inode_id       
+test                     File           5              
+> ls f2/
+name                     type           inode_id       
+test                     File           5  
+```
+
+原因： 
+```
+for (int j = 0; j < BLOCK_SIZE / DIR_SIZE; j++) {
+    if (strcmp(di[j].name, name) == 0) {
+        if (di[j].type == type)
+            return di[j].inode_id;  // 此处之前return了di[i]的inode，导致出错
+        else {
+            fprintf(stderr, "Error: %s is not a folder.\n", name);
+            return -1;
+        }
+    }
+}
+```

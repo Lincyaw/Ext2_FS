@@ -23,7 +23,7 @@ void initExt2() {
     sp_block *superB = (sp_block *) buffer;
     memset(superB, 0, SP_SIZE);
     superB->magic_num = MAGIC;
-    superB->free_block_count = MAX_BLOCK_NUM - 1 - 4;  //1024-超级块-4个blcok的inode数组
+    superB->free_block_count = MAX_BLOCK_NUM - 1 - 4;  //1024-超级块-4个block的inode数组
     superB->free_inode_count = 32 * BLOCK_SIZE / INODE_SIZE - 2; // 32*1024/32
     superB->dir_inode_count = 0;
     // 前5块是超级块+inode数组部分
@@ -205,6 +205,7 @@ int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t l
                 puts("Fail to open file!");
                 exit(1);
             }
+            fprintf(fp2, "~~~~~~~~~~~~block num: %d~~~~~~~~~~~\n", blockNum);
             for (int j = 0; j < BLOCK_SIZE / INODE_SIZE; j++) {
                 fprintf(fp2, "=====================%d=======================\n", j);
                 printInode(p[j], fp2);
@@ -242,6 +243,7 @@ int createDirItem(uint32_t blockNum, uint32_t inode_id, uint8_t type, char name[
         puts("Fail to open file!");
         exit(1);
     }
+    fprintf(fp1, "~~~~~~~~~~~~block num: %d~~~~~~~~~~~\n", blockNum);
     for (int j = 0; j < BLOCK_SIZE / DIR_SIZE; j++) {
         fprintf(fp1, "=====================%d=======================\n", j);
         printDirItem(di[j], fp1);
@@ -292,9 +294,9 @@ int createDirItem(uint32_t blockNum, uint32_t inode_id, uint8_t type, char name[
  * 遍历给定目录(输入一个id)对应的block中遍历，直到找到名字是 name 的 dir_item.
  * @param curDirInode 当前目录所在的id号
  * @param name 要找的文件/文件夹名, 确保长度是121的字符数组
- * @return 返回inodeid, 失败则返回-1
+ * @return 返回找到的那个diritem对应的inodeid, 失败则返回-1
  */
-uint32_t findFolderOrFile(uint32_t curDirInode, char name[121]) {
+uint32_t findFolderOrFile(uint32_t curDirInode, char name[121], int type) {
     uint32_t which = getBlockNum(curDirInode);
     uint32_t id = getInodeNum(curDirInode);
     char buffer[BLOCK_SIZE];
@@ -311,8 +313,8 @@ uint32_t findFolderOrFile(uint32_t curDirInode, char name[121]) {
         dirItem *di = (dirItem *) tempBuf;
         for (int j = 0; j < BLOCK_SIZE / DIR_SIZE; j++) {
             if (strcmp(di[j].name, name) == 0) {
-                if (di[j].type == FOLDER_T)
-                    return di[i].inode_id;
+                if (di[j].type == type)
+                    return di[j].inode_id;
                 else {
                     fprintf(stderr, "Error: %s is not a folder.\n", name);
                     return -1;
@@ -334,7 +336,7 @@ uint32_t findFolderOrFile(uint32_t curDirInode, char name[121]) {
 
 /**
  * @param dir 形如 "config/zsh/zsh_config.txt" 这样的字符数组
- * @return 执行成功返回1, 否则返回-1
+ * @return 执行成功返回inodeid, 否则返回-1
  */
 int touch(char *dir) {
     // eg:　把输入的形如"config/zsh/zsh_config.txt"的字符串, 解析成 "config" "zsh" "zsh_config.txt", 存入fileName
@@ -347,7 +349,7 @@ int touch(char *dir) {
 
     uint32_t targetId = 2;
     if (strcmp(left, right) != 0) {
-        while ((targetId = findFolderOrFile(targetId, left)) != -1) {
+        while ((targetId = findFolderOrFile(targetId, left, FOLDER_T)) != -1) {
             // 往前挪，把指针挪到zsh开头的那里
             left = right;
             right = simple_tok(left, '/');
@@ -408,7 +410,7 @@ int touch(char *dir) {
     disk_read_whole_block(0, tB2);
     printSuperBlock((sp_block *) tB2);
 #endif
-    return flag;
+    return flag ? inode_id : flag;
 }
 
 
@@ -418,7 +420,7 @@ int mkdir(char *folderName) {
     right = simple_tok(left, '/');
     uint32_t targetId = 2;
     if (strcmp(left, right) != 0) {
-        while ((targetId = findFolderOrFile(targetId, left)) != -1) {
+        while ((targetId = findFolderOrFile(targetId, left, FOLDER_T)) != -1) {
             // 往前挪，把指针挪到zsh开头的那里
             left = right;
             right = simple_tok(left, '/');
@@ -485,7 +487,7 @@ int ls(char *dir) {
     right = simple_tok(left, '/');
     uint32_t targetId = 2;
     if (strcmp(left, "ls") != 0) {
-        while ((targetId = findFolderOrFile(targetId, left)) != -1) {
+        while ((targetId = findFolderOrFile(targetId, left, FOLDER_T)) != -1) {
             // 往前挪，把指针挪到zsh开头的那里
             left = right;
             right = simple_tok(left, '/');
@@ -498,7 +500,7 @@ int ls(char *dir) {
         // 根目录
         targetId = 2;
     }
-
+// TODO:发现目标id少了1
     uint32_t which = getBlockNum(targetId);
     uint32_t id = getInodeNum(targetId);
     // inode数组从第1个block开始.第0个是超级块
@@ -507,13 +509,13 @@ int ls(char *dir) {
     iNode *cdi = (iNode *) tempBuf;
     // 找到这个inode中对应的block_point数组
     uint32_t *block_point = cdi[id].block_point;
-    printf("%-25s%-15s%-15s\n","name","type","inode_id");
+    printf("%-25s%-15s%-15s\n", "name", "type", "inode_id");
     for (int i = 0; i < 6; i++) {
         int blkNum = block_point[i];
         if (blkNum == 0) {
             continue;
         }
-        // 此时的left是要产生的文件名
+
         char files[BLOCK_SIZE];
         disk_read_whole_block(blkNum, files);
         dirItem *p = (dirItem *) files;
@@ -528,11 +530,79 @@ int ls(char *dir) {
     return 1;
 }
 
-int cp() {
-    // TODO
+int cp(char *source, char *target) {
+    char des[121];
+    strcpy(des,target);
+    char *left, *right;
+    left = source;
+    right = simple_tok(left, '/');
+    uint32_t targetId = 2;
+    if (strcmp(left, right) != 0) {
+        while ((targetId = findFolderOrFile(targetId, left, FOLDER_T)) != -1) {
+            // 往前挪，把指针挪到zsh开头的那里
+            left = right;
+            right = simple_tok(left, '/');
+            // 如果left等于right，则说明此时的left已经是文件名了，详情看simple_tok
+            if (left == right) {
+                break;
+            }
+        }
+    } else {
+        // 根目录
+        targetId = 2;
+    }
+    char *left1, *right1;
+    left1 = target;
+    right1 = simple_tok(left1, '/');
+    uint32_t targetId1 = 2;
+    if (strcmp(left1, right1) != 0) {
+        while ((targetId1 = findFolderOrFile(targetId1, left1, FOLDER_T)) != -1) {
+            // 往前挪，把指针挪到zsh开头的那里
+            left1 = right1;
+            right1 = simple_tok(left1, '/');
+            // 如果left等于right，则说明此时的left已经是文件名了，详情看simple_tok
+            if (left1 == right1) {
+                break;
+            }
+        }
+    } else {
+        // 根目录
+        targetId1 = 2;
+    }
+    /**
+     * targetId是源文件所在的文件夹的inodeId, left是源文件的文件名
+     * targetId1是目标文件需要在的文件夹的inodeId, left1是目标文件的文件名
+     * 现在要做的是在targetId对应的6个block中找到源文件的dirItem，再找到dirItem指向的inode，保存一份
+     * 创建一个新的inode,类型为file。将上面保存的inode的信息拷贝给这个新的inode，主要是要把6个block的信息拷贝一下
+     * 然后在targetId1对应的6个block中添加一个dirItem, 名字是left1
+     */
+    int sourceInode = findFolderOrFile(targetId, left, FILE_T);
+    int which = getBlockNum(sourceInode);
+    int id = getInodeNum(sourceInode);
+    char buffer[BLOCK_SIZE];
+    // inode数组从第1个block开始.第0个是超级块
+    disk_read_whole_block(which, buffer);
+    iNode sourceI = ((iNode *) buffer)[id];
+    uint32_t *block_point_s = sourceI.block_point;
+
+
+    // 目标文件的inode, 调用touch先创建一个文件
+    int targetInode = touch(des);
+    int which1 = getBlockNum(targetInode);
+    int id1 = getInodeNum(targetInode);
+    char buffer1[BLOCK_SIZE];
+    // inode数组从第1个block开始.第0个是超级块
+    disk_read_whole_block(which1, buffer1);
+    uint32_t *block_point_t = ((iNode *) buffer)[id1].block_point;
+
+    for (int i = 0; i < 6; i++) {
+        char temp[BLOCK_SIZE];
+        disk_read_whole_block(block_point_s[i],temp);
+        disk_write_whole_block(block_point_t[i],temp);
+    }
+
     return -1;
 }
-
 
 
 /**

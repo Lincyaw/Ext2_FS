@@ -77,7 +77,7 @@ int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t l
 int createDirItem(uint32_t blockNum, uint32_t inode_id, uint8_t type, char name[121]);
 
 
-uint32_t findFolderOrFile(uint32_t curDirInode, char name[121]);
+uint32_t findFolderOrFile(uint32_t curDirInode, char name[121],int type);
 
 
 int touch(char* dir);
@@ -87,7 +87,7 @@ int mkdir(char *folderName);
 
 int ls(char *dir);
 
-int cp();
+int cp(char *source, char *target);
 
 void shutdown();
 /**

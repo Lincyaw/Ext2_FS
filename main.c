@@ -66,6 +66,7 @@ int main() {
 #if DEBUG == 1
                     printf("\tInstruction:\tcp\n\tSource file:\t%s\n\tDestination file:\t%s\n", left, right);
 #endif
+                    cp(left,right);
                 }
             }
         } else if (strcmp(left, "shutdown") == 0) {
