@@ -3,8 +3,12 @@
 #include "testModule.h"
 
 int main() {
-    printf("Hello, World!\n");
-    initExt2();
+    printf("Hello, World! Do you want do reformat the disk? [y/n]\n");
+    fgets(cmd, sizeof(cmd), stdin);
+    if (cmd[0]=='y'){
+        initExt2();
+    }
+
     while (1) {
         printf("> ");
         memset(cmd, 0, 1024);
@@ -26,7 +30,7 @@ int main() {
                 ls(right);
             } else {
 #if DEBUG == 1
-                printf("\tInstruction:\tmkdir\n\tDest Folder:\t%s\n", right);
+                printf("\tInstruction:\tls\n\tDest Folder:\t%s\n", right);
 #endif
                 ls(right);
             }

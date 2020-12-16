@@ -4,12 +4,16 @@
 #include "fs.h"
 
 void initExt2() {
-
+    int errno = remove("../disks/disk");
+    if (errno < 0) {
+        fprintf(stderr, "delete failed.\n");
+        printf("%s\n", strerror(errno));
+    }
 #if DEBUG == 1
     fprintf(stderr, "Starting to check disk size.\n");
-    fprintf(stderr, "sp_block size = %u.\n", sizeof(sp_block));
-    fprintf(stderr, "iNode size = %u.\n", sizeof(iNode));
-    fprintf(stderr, "dirItem size = %u.\n", sizeof(dirItem));
+    fprintf(stderr, "sp_block size = %lu.\n", sizeof(sp_block));
+    fprintf(stderr, "iNode size = %lu.\n", sizeof(iNode));
+    fprintf(stderr, "dirItem size = %lu.\n", sizeof(dirItem));
     assert(sizeof(sp_block) == 1024);
     assert(sizeof(iNode) == 32);
     assert(sizeof(dirItem) == 128);
@@ -20,7 +24,7 @@ void initExt2() {
     memset(superB, 0, SP_SIZE);
     superB->magic_num = MAGIC;
     superB->free_block_count = MAX_BLOCK_NUM - 1 - 4;  //1024-超级块-4个blcok的inode数组
-    superB->free_inode_count = 32 * BLOCK_SIZE / INODE_SIZE; // 32*1024/32
+    superB->free_inode_count = 32 * BLOCK_SIZE / INODE_SIZE - 2; // 32*1024/32
     superB->dir_inode_count = 0;
     // 前5块是超级块+inode数组部分
     bit_set(superB->block_map, 0);
@@ -31,15 +35,17 @@ void initExt2() {
     // 前三个inode默认被占用
     bit_set(superB->inode_map, 0);
     bit_set(superB->inode_map, 1);
-    bit_set(superB->inode_map, 2);
-    createInode(1, 100, FOLDER_T, 1);
+//    bit_set(superB->inode_map, 2);
+
 
 #if DEBUG == 1
     assert(superB->magic_num == MAGIC);
     assert(superB->free_block_count == MAX_BLOCK_NUM - 1 - 4);
-    assert(superB->free_inode_count == 1024);
+    assert(superB->free_inode_count == 1022);
 #endif
     disk_write_whole_block(0, buffer);
+    // createinode一定要放到write后面，因为放前面的话会导致create了个寂寞
+    createInode(1, 0x100, FOLDER_T, 1);
 }
 
 void printSuperBlock(const sp_block *sp_block_buf) {
@@ -144,6 +150,7 @@ int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t l
         puts("Fail to open file!");
         exit(1);
     }
+    fprintf(fp1, "~~~~~~~~~~~~block num: %d~~~~~~~~~~~\n", blockNum);
     for (int j = 0; j < BLOCK_SIZE / INODE_SIZE; j++) {
         fprintf(fp1, "=====================%d=======================\n", j);
         printInode(p[j], fp1);
@@ -176,6 +183,9 @@ int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t l
                     if (count == 6) {
                         sp->free_inode_count--;
                         sp->free_block_count -= 6;
+                        if (file_type == FOLDER_T) {
+                            sp->dir_inode_count++;
+                        }
                         uint32_t *inodeMap = (uint32_t *) sp->inode_map;
                         bit_set(inodeMap, getTotalInodeNum(blockNum, i));
                         break;
@@ -263,6 +273,8 @@ int createDirItem(uint32_t blockNum, uint32_t inode_id, uint8_t type, char name[
         puts("Fail to open file!");
         exit(1);
     }
+    fprintf(fp2, "~~~~~~~~~~~~block num: %d~~~~~~~~~~~\n", blockNum);
+
     for (int j = 0; j < BLOCK_SIZE / DIR_SIZE; j++) {
         fprintf(fp2, "=====================%d=======================\n", j);
         printDirItem(di[j], fp2);
@@ -299,10 +311,16 @@ uint32_t findFolderOrFile(uint32_t curDirInode, char name[121]) {
         dirItem *di = (dirItem *) tempBuf;
         for (int j = 0; j < BLOCK_SIZE / DIR_SIZE; j++) {
             if (strcmp(di[j].name, name) == 0) {
-                return di[i].inode_id;
+                if (di[j].type == FOLDER_T)
+                    return di[i].inode_id;
+                else {
+                    fprintf(stderr, "Error: %s is not a folder.\n", name);
+                    return -1;
+                }
             }
         }
     }
+    fprintf(stderr, "Error: no such file/folder.\n");
     return -1;
 }
 
@@ -489,16 +507,19 @@ int ls(char *dir) {
     iNode *cdi = (iNode *) tempBuf;
     // 找到这个inode中对应的block_point数组
     uint32_t *block_point = cdi[id].block_point;
-    printf("name:\t\t\t\t\ttype:\t\t\t\t\tinode_id:\n");
+    printf("%-25s%-15s%-15s\n","name","type","inode_id");
     for (int i = 0; i < 6; i++) {
         int blkNum = block_point[i];
+        if (blkNum == 0) {
+            continue;
+        }
         // 此时的left是要产生的文件名
         char files[BLOCK_SIZE];
-            disk_read_whole_block(blkNum,files);
-            dirItem *p = (dirItem*)files;
-        for(int j = 0;j<BLOCK_SIZE/DIR_SIZE;j++){
-            if(p[j].valid){
-                printf("%-25s%-15s%-15d\n",p[j].name,p[j].type==100?"File":"Folder",p[j].inode_id);
+        disk_read_whole_block(blkNum, files);
+        dirItem *p = (dirItem *) files;
+        for (int j = 0; j < BLOCK_SIZE / DIR_SIZE; j++) {
+            if (p[j].valid) {
+                printf("%-25s%-15s%-15d\n", p[j].name, p[j].type == 100 ? "File" : "Folder", p[j].inode_id);
             }
         }
     }
@@ -512,9 +533,7 @@ int cp() {
     return -1;
 }
 
-void shutdown() {
-    // TODO
-}
+
 
 /**
  *

@@ -21,7 +21,7 @@ static char cmd[1024] = "\0";
 #define INODE_SIZE sizeof(iNode)
 #define DIR_SIZE sizeof(dirItem)
 #define MAGIC (0xaabbccdd)
-#define DEBUG (1)
+#define DEBUG (0)
 
 //char buffer[BLOCK_SIZE]; //不再使用全局的。使用全局导致有函数修改了这个buf，导致出错
 #pragma pack(1)
