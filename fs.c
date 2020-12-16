@@ -593,7 +593,7 @@ int cp(char *source, char *target) {
     char buffer1[BLOCK_SIZE];
     // inode数组从第1个block开始.第0个是超级块
     disk_read_whole_block(which1, buffer1);
-    uint32_t *block_point_t = ((iNode *) buffer)[id1].block_point;
+    uint32_t *block_point_t = ((iNode *) buffer1)[id1].block_point;
 
     for (int i = 0; i < 6; i++) {
         char temp[BLOCK_SIZE];
