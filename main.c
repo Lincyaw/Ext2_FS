@@ -5,7 +5,7 @@
 int main() {
     printf("Hello, World! Do you want do reformat the disk? [y/n]\n");
     fgets(cmd, sizeof(cmd), stdin);
-    if (cmd[0]=='y'){
+    if (cmd[0] == 'y') {
         initExt2();
     }
 
@@ -66,7 +66,7 @@ int main() {
 #if DEBUG == 1
                     printf("\tInstruction:\tcp\n\tSource file:\t%s\n\tDestination file:\t%s\n", left, right);
 #endif
-                    cp(left,right);
+                    cp(left, right);
                 }
             }
         } else if (strcmp(left, "shutdown") == 0) {

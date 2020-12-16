@@ -64,24 +64,17 @@ typedef struct dir_item {               // 目录项一个更常见的叫法是 
 
 void initExt2();
 
-
 void printSuperBlock(const sp_block *sp_block_buf);
 
-
-void printInode(iNode node,FILE* fp);
-
+void printInode(iNode node, FILE *fp);
 
 int createInode(uint32_t blockNum, uint32_t size, uint16_t file_type, uint16_t link);
 
-
 int createDirItem(uint32_t blockNum, uint32_t inode_id, uint8_t type, char name[121]);
 
+uint32_t findFolderOrFile(uint32_t curDirInode, char name[121], int type);
 
-uint32_t findFolderOrFile(uint32_t curDirInode, char name[121],int type);
-
-
-int touch(char* dir);
-int touchHelper(uint32_t curDirInode,char *fileName);
+int touch(char *dir);
 
 int mkdir(char *folderName);
 
@@ -90,12 +83,14 @@ int ls(char *dir);
 int cp(char *source, char *target);
 
 void shutdown();
+
 /**
  *
  * @param inodeNumber
  * @return 返回第inodeNumber个inode，在哪个block
  */
 uint32_t getBlockNum(uint32_t inodeNumber);
+
 /**
  *
  * @param inodeNumber
@@ -109,6 +104,6 @@ uint32_t getInodeNum(uint32_t inodeNumber);
  * @param inodeNumInBlock 在块内的第几个inode
  * @return 总的第几个inode
  */
-uint32_t getTotalInodeNum(uint32_t blockNum,uint32_t inodeNumInBlock);
+uint32_t getTotalInodeNum(uint32_t blockNum, uint32_t inodeNumInBlock);
 
 #endif //EXT2_FS_FS_H

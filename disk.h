@@ -5,26 +5,26 @@
 #ifndef EXT2_FS_DISK_H
 #define EXT2_FS_DISK_H
 
-// The size of one single disk block in bytes
 #define DEVICE_BLOCK_SIZE 512
 
 
+void disk_write_whole_block(unsigned int block_num, char *buf);
 
-void disk_write_whole_block(unsigned int block_num, char* buf);
+void disk_read_whole_block(unsigned int block_num, char *buf);
 
-void disk_read_whole_block(unsigned int block_num, char* buf);
 /**
  * 封装后的disk_write_block,读写安全
  * @param block_num
  * @param buf
  */
-void disk_write(unsigned int block_num, char* buf);
+void disk_write(unsigned int block_num, char *buf);
+
 /**
  * 封装后的disk_write_block,读写安全
  * @param block_num
  * @param buf
  */
-void disk_read(unsigned int block_num, char* buf);
+void disk_read(unsigned int block_num, char *buf);
 
 
 // Total disk size in bytes, 4 * 1024 * 1024 bytes (4 MiB) in total
@@ -63,7 +63,7 @@ int close_disk();
  * @note The space of buf should be no less than DEVICE_BLOCK_SIZE.
  * Make sure open_disk() is called before calling this function.
  */
-int disk_read_block(unsigned int block_num, char* buf);
+int disk_read_block(unsigned int block_num, char *buf);
 
 /**
  * @brief Write content of buf to the block_num-th block.
@@ -74,6 +74,6 @@ int disk_read_block(unsigned int block_num, char* buf);
  *
  * @note Make sure open_disk() is called before calling this function.
  */
-int disk_write_block(unsigned int block_num, char* buf);
+int disk_write_block(unsigned int block_num, char *buf);
 
 #endif //EXT2_FS_DISK_H

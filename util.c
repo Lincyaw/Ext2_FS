@@ -12,6 +12,7 @@ int bit_isset(const uint32_t *array, uint32_t index) {
     uint8_t m = (uint8_t) (1 << (index % 8));
     return (b & m) == m;
 }
+
 /**
  * 比如分配了前10个bit, 他打印出来的样子是 ff 3, 而不是 ff c0, 每两个8位之间是紧密相连的
  * @param array

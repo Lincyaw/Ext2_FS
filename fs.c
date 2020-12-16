@@ -532,7 +532,7 @@ int ls(char *dir) {
 
 int cp(char *source, char *target) {
     char des[121];
-    strcpy(des,target);
+    strcpy(des, target);
     char *left, *right;
     left = source;
     right = simple_tok(left, '/');
@@ -597,8 +597,8 @@ int cp(char *source, char *target) {
 
     for (int i = 0; i < 6; i++) {
         char temp[BLOCK_SIZE];
-        disk_read_whole_block(block_point_s[i],temp);
-        disk_write_whole_block(block_point_t[i],temp);
+        disk_read_whole_block(block_point_s[i], temp);
+        disk_write_whole_block(block_point_t[i], temp);
     }
 
     return -1;
